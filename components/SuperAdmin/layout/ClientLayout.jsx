@@ -1,8 +1,8 @@
 "use client";
 
-import Sidebar from "@/components/layout/Sidebar";
+import Sidebar from "@/components/SuperAdmin/layout/Sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import Header from "@/components/layout/Header";
+import Header from "@/components/SuperAdmin/layout/Header";
 
 export default function ClientLayout({ children }) {
   return (
@@ -21,7 +21,7 @@ export default function ClientLayout({ children }) {
           />
 
           {/* Page Content */}
-          <main className="flex-1 p-4">{children}</main>
+          <main className="flex-1">{children}</main>
         </div>
       </div>
     </SidebarProvider>

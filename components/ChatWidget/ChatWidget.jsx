@@ -181,13 +181,13 @@ export default function AIChatInterface() {
 
     const hideTimer = setTimeout(() => {
       if (!tooltipHovered) setShowTooltip(false);
-    }, 8000);
+    }, 7000);
 
     return () => {
       clearTimeout(showTimer);
       clearTimeout(hideTimer);
     };
-  }, [isOpen, tooltipHovered]);
+  }, [ tooltipHovered]);
 
   const onSubmit = (data) => {
     const text = typeof data.message === "string" ? data.message.trim() : "";

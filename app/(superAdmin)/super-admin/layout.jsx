@@ -1,4 +1,4 @@
-import ClientLayout from "@/components/layout/ClientLayout";
+import ClientLayout from "@/components/SuperAdmin/layout/ClientLayout";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { Toaster } from "sonner";
 
