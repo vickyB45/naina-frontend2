@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
       <body className="font-sans bg-white text-gray-900">
         <QueryProvider>
           {children}
-          <AIChatInterface />
+          {/* <AIChatInterface /> */}
           <Toaster richColors position="top-right" />
         </QueryProvider>
       </body>
