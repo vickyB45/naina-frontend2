@@ -1,94 +1,403 @@
-// TrafficInsightsDashboard.jsx
 "use client";
 import React from "react";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
-import LeaderboardTable from "@/components/SuperAdmin/TrafficInsightsDashboard/LeaderboardTable";
-import IntentMixChart from "@/components/SuperAdmin/TrafficInsightsDashboard/IntentMixChart";
-import { BarChart3, Copyright, DollarSign, Tag } from "lucide-react";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  PieChart,
+  Pie,
+  Cell,
+  CartesianGrid,
+} from "recharts";
 
-export default function TrafficInsightsDashboard() {
-  const stats = [
-    { icon: BarChart3, color: "#D55559", label: "Total Visitors", value: "5,300", change: "+12.5%" },
-    { icon: Copyright, color: "#1E88E5", label: "High Intent %", value: "14%", change: "+2.3%" },
-    { icon: DollarSign, color: "#8E24AA", label: "Revenue", value: "₹2.3L", change: "+18.2%" },
-    { icon: Tag, color: "#FFB300", label: "Avg AOV ₹", value: "₹2,350", change: "+5.7%" },
-  ];
+// ------------------ Dummy Data ------------------
+const stats = [
+  {
+    title: "Total Visits",
+    value: "1.28M",
+    change: "+12.4%",
+    color: "#3b82f6",
+    data: [
+      { value: 200 },
+      { value: 400 },
+      { value: 600 },
+      { value: 800 },
+      { value: 700 },
+      { value: 900 },
+      { value: 1100 },
+    ],
+  },
+  {
+    title: "Avg. Session Time",
+    value: "3m 25s",
+    change: "+2.1%",
+    color: "#10b981",
+    data: [
+      { value: 300 },
+      { value: 320 },
+      { value: 400 },
+      { value: 450 },
+      { value: 420 },
+      { value: 460 },
+      { value: 500 },
+    ],
+  },
+  {
+    title: "Bounce Rate",
+    value: "38.5%",
+    change: "-1.2%",
+    color: "#ef4444",
+    data: [
+      { value: 700 },
+      { value: 600 },
+      { value: 650 },
+      { value: 500 },
+      { value: 550 },
+      { value: 530 },
+      { value: 520 },
+    ],
+  },
+  {
+    title: "Conversions",
+    value: "4,120",
+    change: "+18.2%",
+    color: "#8b5cf6",
+    data: [
+      { value: 300 },
+      { value: 400 },
+      { value: 350 },
+      { value: 500 },
+      { value: 550 },
+      { value: 650 },
+      { value: 700 },
+    ],
+  },
+];
 
-  const leaderboardData = [
-    { campaign: "Meta Ads", visitors: "5,300", highIntent: "14%", chatToPurchase: "8%", avgAov: "₹2,350" },
-    { campaign: "Google Ads", visitors: "2,680", highIntent: "21%", chatToPurchase: "7%", avgAov: "₹1,980" },
-    { campaign: "Email", visitors: "1,950", highIntent: "16%", chatToPurchase: "6%", avgAov: "₹2,100" },
-    { campaign: "Social", visitors: "1,420", highIntent: "12%", chatToPurchase: "9%", avgAov: "₹1,800" },
-  ];
+const intentData = [
+  { name: "High Intent", value: 45, color: "#10b981" },
+  { name: "Medium Intent", value: 30, color: "#3b82f6" },
+  { name: "Low Intent", value: 25, color: "#f59e0b" },
+];
 
-  const intentData = [
-    { name: "High Intent", value: 14 },
-    { name: "Medium", value: 35 },
-    { name: "Low Intent", value: 51 },
-  ];
+const trafficOverTime = [
+  { name: "Mon", visits: 800 },
+  { name: "Tue", visits: 1100 },
+  { name: "Wed", visits: 950 },
+  { name: "Thu", visits: 1250 },
+  { name: "Fri", visits: 1400 },
+  { name: "Sat", visits: 1000 },
+  { name: "Sun", visits: 1350 },
+];
 
+const leaderboard = [
+  { page: "/home", views: "198K", engagement: "65%" },
+  { page: "/pricing", views: "155K", engagement: "74%" },
+  { page: "/contact", views: "89K", engagement: "52%" },
+  { page: "/blog", views: "72K", engagement: "60%" },
+];
+
+const aiEngagement = [
+  { name: "Chat Opens", ai: 80, site: 60 },
+  { name: "Product Views", ai: 65, site: 45 },
+  { name: "Add to Cart", ai: 40, site: 30 },
+  { name: "Checkout", ai: 25, site: 18 },
+];
+
+// ------------------ UI ------------------
+export default function TrafficInsights() {
   return (
-    <div className="min-h-screen w-full overflow-x-hidden sm:px-4">
-      <Card className="shadow-lg  border-none backdrop-blur-sm w-full px-2 overflow-hidden">
-        {/* Header */}
-        <CardHeader className="space-y-1 px-4 pt-4">
-          <CardTitle className="text-xl sm:text-2xl md:text-3xl pb-1">Traffic & Intent Insights</CardTitle>
-          <p className="text-sm text-gray-500">Real-time analytics dashboard for your campaigns</p>
-        </CardHeader>
+    <div className="min-h-screen p-6 lg:p-10 space-y-8">
+      {/* Header */}
+      <header>
+        <h1 className="text-3xl font-bold ">Traffic Insights</h1>
+        <p className="text-gray-500 text-sm mt-1">Internal Analytics Overview</p>
+      </header>
 
-        {/* Stats Section */}
-        <CardContent className="px-3 sm:px-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-            {stats.map((stat, index) => (
-              <Card
-                key={index}
-                style={{ borderLeft: `4px solid ${stat.color}` }}
-                className="group  overflow-hidden rounded-xl transition-all duration-300 shadow-sm hover:shadow-md border"
+      {/* Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat, i) => (
+          <div
+            key={i}
+            className="rounded-2xl border p-5 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col"
+          >
+            {/* Title */}
+            <div className="flex justify-between items-center">
+              <h3 className="text-sm font-medium text-gray-500">{stat.title}</h3>
+              <span
+                className="text-xs font-semibold px-2 py-0.5 rounded-full"
+                style={{
+                  backgroundColor: `${stat.color}15`,
+                  color: stat.color,
+                }}
               >
-                <CardHeader className="flex items-center justify-between px-3 py-2 border-b ">
-                  <div className="flex items-center gap-2">
-                    <div className="rounded-lg">
-                      <stat.icon className="w-4 h-4" />
-                    </div>
-                    <CardTitle className="text-sm font-medium">{stat.label}</CardTitle>
-                  </div>
-                  <span className={`text-xs font-medium ${stat.change.includes("+") ? "text-green-600" : "text-red-600"}`}>{stat.change}</span>
-                </CardHeader>
-
-                <CardContent className="px-3">
-                  <p style={{ color: stat.color }} className="text-2xl sm:text-3xl font-semibold tracking-tight">
-                    {stat.value}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">vs last period</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-
-        {/* Leaderboard + Chart Section */}
-        <CardContent className="px-0 sm:px-4">
-          <div className="flex flex-col xl:flex-row w-full gap-3 xl:gap-4">
-            <div className="w-full xl:w-[65%]">
-              <LeaderboardTable data={leaderboardData} />
+                {stat.change}
+              </span>
             </div>
-            <div className="w-full xl:w-[32%]">
-              <IntentMixChart data={intentData} />
+
+            {/* Value + Chart */}
+            <div className="flex justify-between items-center gap-2">
+              <div className="mt-3 mb-2 text-2xl font-semibold tracking-tight">
+                {stat.value}
+              </div>
+              <div className="h-10 w-24">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={stat.data}>
+                    <defs>
+                      <linearGradient id={`gradient-${i}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={stat.color} stopOpacity={0.9} />
+                        <stop offset="100%" stopColor={stat.color} stopOpacity={0.1} />
+                      </linearGradient>
+                    </defs>
+                    <Area
+                      type="monotone"
+                      dataKey="value"
+                      stroke={stat.color}
+                      strokeWidth={2}
+                      fill={`url(#gradient-${i})`}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
-        </CardContent>
+        ))}
+      </div>
 
-        {/* Footer */}
-        <CardFooter className="text-xs sm:text-sm text-gray-500 border-t mt-4 sm:mt-6 px-3 sm:px-4">
-          <div className="flex items-center justify-between w-full flex-wrap gap-2">
-            <p className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-              Last updated: Just now
-            </p>
-            <p className="text-[10px] sm:text-xs">Data refreshes every 5 minutes</p>
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Section */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Leaderboard Table */}
+          <div className="rounded-2xl border  p-5 shadow-sm">
+            <h2 className="text-lg font-semibold mb-4">Top Performing Pages</h2>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-gray-500 border-b">
+                  <th className="text-left pb-2">Page</th>
+                  <th className="text-left pb-2">Views</th>
+                  <th className="text-left pb-2">Engagement</th>
+                </tr>
+              </thead>
+              <tbody>
+                {leaderboard.map((row, i) => (
+                  <tr key={i} className="border-b last:border-none">
+                    <td className="py-2">{row.page}</td>
+                    <td>{row.views}</td>
+                    <td>{row.engagement}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        </CardFooter>
-      </Card>
+
+          {/* Traffic Over Time */}
+          <div className="rounded-2xl border  p-5 shadow-sm">
+            <h2 className="text-lg font-semibold mb-4">Traffic Over Time</h2>
+            <div className="h-64">
+<ResponsiveContainer width="100%" height="100%">
+    <LineChart
+      data={trafficOverTime}
+      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+    >
+      {/* --- Gradient Background --- */}
+      <defs>
+        <linearGradient id="colorVisits" x1="0" y1="0" x2="0" y2="1">
+          <stop
+            offset="5%"
+            stopColor="#3b82f6"
+            stopOpacity={0.4}
+          />
+          <stop
+            offset="95%"
+            stopColor="#3b82f6"
+            stopOpacity={0}
+          />
+        </linearGradient>
+      </defs>
+
+      {/* --- X & Y Axis --- */}
+      <XAxis
+        dataKey="name"
+        stroke="currentColor"
+        tick={{ fill: "currentColor", fontSize: 12 }}
+        axisLine={{ stroke: "currentColor" }}
+      />
+      <YAxis
+        stroke="currentColor"
+        tick={{ fill: "currentColor", fontSize: 12 }}
+        axisLine={{ stroke: "currentColor" }}
+        tickFormatter={(val) => `${val / 1000}k`}
+      />
+
+      {/* --- Grid Lines --- */}
+      <CartesianGrid
+        strokeDasharray="3 3"
+        stroke="rgba(128,128,128,0.2)"
+        vertical={false}
+      />
+
+      {/* --- Tooltip --- */}
+      <Tooltip
+        contentStyle={{
+          backgroundColor:
+            document.documentElement.classList.contains("dark")
+              ? "rgba(255,255,255,0.05)"
+              : "#fff",
+          border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: "10px",
+          color: document.documentElement.classList.contains("dark")
+            ? "#fff"
+            : "#000",
+          boxShadow:
+            "0 4px 12px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.05)",
+        }}
+        labelStyle={{
+          color: document.documentElement.classList.contains("dark")
+            ? "#9ca3af"
+            : "#6b7280",
+          fontWeight: 600,
+        }}
+        itemStyle={{
+          color: document.documentElement.classList.contains("dark")
+            ? "#fff"
+            : "#111",
+          fontWeight: 500,
+        }}
+        cursor={{ strokeDasharray: "3 3", stroke: "#3b82f6" }}
+      />
+
+      {/* --- Line --- */}
+      <Line
+        type="monotone"
+        dataKey="visits"
+        stroke="#3b82f6"
+        strokeWidth={2.5}
+        fillOpacity={1}
+        fill="url(#colorVisits)"
+        activeDot={{
+          r: 6,
+          fill: "#3b82f6",
+          strokeWidth: 2,
+          stroke: "#fff",
+        }}
+        dot={false}
+        animationDuration={800}
+        isAnimationActive={true}
+      />
+    </LineChart>
+  </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Section */}
+        <div className="space-y-6">
+          {/* Intent Mix Chart */}
+          <div className="rounded-2xl border  p-5 shadow-sm">
+            <h2 className="text-lg font-semibold ">Visitor Intent Mix</h2>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={intentData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={80}
+                    dataKey="value"
+                  >
+                    {intentData.map((entry, i) => (
+                      <Cell key={`cell-${i}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <ul className="flex justify-around mt-3 text-sm ">
+              {intentData.map((item, i) => (
+                <li key={i} className="flex items-center gap-2">
+                  <span
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: item.color }}
+                  ></span>
+                  {item.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* AI vs Site Engagement */}
+          <div className="rounded-2xl border  p-5 shadow-sm">
+            <h2 className="text-lg font-semibold mb-4">AI vs Site Engagement</h2>
+            <div className="h-64">
+             <ResponsiveContainer width="100%" height="100%">
+  <LineChart data={aiEngagement}>
+    <XAxis
+      dataKey="name"
+      stroke="currentColor"
+      tick={{ fill: "currentColor" }}
+      axisLine={{ stroke: "currentColor" }}
+    />
+    <YAxis
+      stroke="currentColor"
+      tick={{ fill: "currentColor" }}
+      axisLine={{ stroke: "currentColor" }}
+    />
+
+    {/* Tooltip Fix for Dark Mode */}
+    <Tooltip
+      contentStyle={{
+        backgroundColor:
+          document.documentElement.classList.contains("dark")
+            ? "rgba(255,255,255,0.1)" // translucent white for dark mode
+            : "#ffffff",
+        border: "1px solid rgba(255,255,255,0.2)",
+        borderRadius: "8px",
+        color: document.documentElement.classList.contains("dark")
+          ? "#ffffff"
+          : "#000000",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+      }}
+      labelStyle={{
+        color: document.documentElement.classList.contains("dark")
+          ? "#d1d5db"
+          : "#6b7280",
+        fontWeight: 600,
+      }}
+      itemStyle={{
+        color: document.documentElement.classList.contains("dark")
+          ? "#fff"
+          : "#111",
+        fontWeight: 500,
+      }}
+    />
+
+    <Line
+      type="monotone"
+      dataKey="ai"
+      stroke="#8b5cf6"
+      strokeWidth={2}
+    />
+    <Line
+      type="monotone"
+      dataKey="site"
+      stroke="#10b981"
+      strokeWidth={2}
+    />
+  </LineChart>
+</ResponsiveContainer>
+
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

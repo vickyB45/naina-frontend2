@@ -1,5 +1,4 @@
 import ClientLayout from "@/components/SuperAdmin/layout/ClientLayout";
-import { ThemeProvider } from "@/providers/ThemeProvider";
 import { Toaster } from "sonner";
 
 export const metadata = {
@@ -9,12 +8,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    
       <div className="bg-background text-foreground min-h-screen">
-        <ThemeProvider attribute="class" defaultTheme="light">
-          <ClientLayout>{children}</ClientLayout>
-          <Toaster position="top-right" />
-        </ThemeProvider>
+        <ClientLayout>{children}</ClientLayout>
+        <Toaster position="top-right" />
       </div>
   );
 }

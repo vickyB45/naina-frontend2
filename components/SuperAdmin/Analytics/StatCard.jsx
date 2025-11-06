@@ -26,7 +26,8 @@ const StatCard = ({ title, value, change, data, color }) => {
         </div>
 
         {/* Gradient Chart */}
-        <div className="h-10 w-24">
+       {data && (
+         <div className="h-10 w-24">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data}>
               <defs>
@@ -45,6 +46,7 @@ const StatCard = ({ title, value, change, data, color }) => {
             </AreaChart>
           </ResponsiveContainer>
         </div>
+       )}
       </div>
     </div>
   );

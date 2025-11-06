@@ -257,8 +257,8 @@ export default function AIChatInterface() {
               setTimeout(() => setShowTooltip(true), 1500);
             }}
             className="absolute bottom-20 right-0 md:right-2 px-4 py-3 
-                 bg-gradient-to-br from-sky-500 via-blue-500 to-cyan-400 
-                 text-white rounded-3xl shadow-2xl z-[65] w-[280px]"
+                 bg-linear-to-br from-sky-500 via-blue-500 to-cyan-400 
+                 text-white rounded-3xl shadow-2xl z-65 w-[280px]"
           >
             <div className="flex flex-col gap-1 text-center sm:text-left">
               <div className="w-full flex items-center justify-between px-4"><span className="font-semibold text-[15px]">Hey there 👋 </span>
@@ -281,7 +281,7 @@ export default function AIChatInterface() {
       <AnimatePresence>
         {!isOpen && (
           <motion.div
-            className="fixed bottom-6 right-6 z-[60]"
+            className="fixed bottom-6 right-6 z-60"
             initial={false}
             animate={{ scale: isOpen ? 0 : 1, opacity: isOpen ? 0 : 1 }}
             transition={{ duration: 0.25 }}
@@ -293,7 +293,7 @@ export default function AIChatInterface() {
                 setTooltipHovered(false);
               }}
               aria-label="Open chat"
-              className="relative p-4 rounded-full bg-gradient-to-br from-blue-500 to-sky-500 
+              className="relative p-4 rounded-full bg-linear-to-br from-blue-500 to-sky-500 
                shadow-[0_0_25px_rgba(56,189,248,0.5)] hover:shadow-[0_0_35px_rgba(56,189,248,0.7)] 
                transition-all duration-300 ease-out"
               whileHover={{ scale: 1.1 }}
@@ -335,7 +335,7 @@ export default function AIChatInterface() {
           >
             <div className="bg-white dark:bg-zinc-900 shadow-2xl rounded-3xl overflow-hidden border border-gray-200 dark:border-zinc-800 flex flex-col h-[500px]">
               <div
-                className="flex-shrink-0 px-5 py-4"
+                className="shrink-0 px-5 py-4"
                 style={{
                   background: `linear-gradient(135deg, ${AI_PROVIDERS[selectedAI].color}, ${AI_PROVIDERS[selectedAI].color}dd)`,
                 }}
@@ -530,7 +530,7 @@ export default function AIChatInterface() {
                 </div>
               </div>
 
-              <div className="flex-shrink-0 p-3 bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-800">
+              <div className="shrink-0 p-3 bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-800">
                 <div className="flex gap-2">
                   <input
                     autoFocus
