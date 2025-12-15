@@ -1,9 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import {
-  DataGrid,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
+import { DataGrid, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bot, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -31,69 +28,114 @@ export const ClientsTable = ({ clients = [], onDelete }) => {
   }, []);
 
   if (!mounted) return null;
+  // console.log(clients)
+  const client = clients.flatMap((client)=>{  
+    return client
+  }
+  )
 
-  const rows = clients.map((client, index) => ({
-    id: client.id || index + 1,
-    name: client.name,
-    logo:
-      client.logo ||
-      "https://cdn3.pixelcut.app/enhance_after_1_a557cc1008.jpg",
-    plan: client.plan,
-    chats: client.performance?.chats ?? 0,
-    conversion: client.performance?.conversion ?? 0,
-    engagement: client.performance?.engagement ?? 0,
-    aiStatus: client.aiStatus || "Inactive",
+  // ✅ Map your new client structure
+  const rows = client.map((client, index) => ({
+    id: client._id || index + 1,
+    logo: client.branding?.logo || "https://i.pinimg.com/736x/39/f6/5a/39f65ae95bf3c68b2af6605813f1d7a2.jpg",
+    companyName: client.companyName,
+    contactPerson: client.contactPerson,
+    email: client.email,
+    planType: client.plan?.type || "N/A",
+    chatLimit: client.plan?.chatLimit || 0,
+    totalChats: client.analytics?.totalChats || 0,
+    activeUsers: client.analytics?.activeUsers || 0,
+    avgResponseTime: client.analytics?.avgResponseTime || "-",
+    aiModel: client.aiSettings?.model || "N/A",
+    memory: client.aiSettings?.memoryEnabled ? "Enabled" : "Disabled",
+    status: client.status || "inactive",
   }));
 
   const columns = [
     {
-      field: "name",
-      headerName: "Client",
+      field: "companyName",
+      headerName: "Company",
       flex: 1.5,
-      sortable: true,
       renderCell: (params) => (
         <div className="flex items-center gap-3">
           <img
             src={params.row.logo}
             alt={params.value}
-            className="w-8 h-8 rounded-full object-cover"
+            className="w-8 h-8 rounded-full object-cover border"
           />
-          <span className="font-medium">{params.value}</span>
+          <div>
+            <div className="font-medium">{params.value}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              {params.row.contactPerson}
+            </div>
+          </div>
         </div>
       ),
     },
-    { field: "plan", headerName: "Plan", flex: 1 },
+    { field: "planType", headerName: "Plan", flex: 1 },
     {
-      field: "chats",
-      headerName: "AI Chats",
+      field: "chatLimit",
+      headerName: "Chat Limit",
       flex: 1,
       align: "center",
       headerAlign: "center",
     },
     {
-      field: "conversion",
-      headerName: "Conversion %",
+      field: "totalChats",
+      headerName: "Total Chats",
       flex: 1,
       align: "center",
       headerAlign: "center",
     },
     {
-      field: "engagement",
-      headerName: "Engagement %",
+      field: "activeUsers",
+      headerName: "Active Users",
       flex: 1,
       align: "center",
       headerAlign: "center",
     },
     {
-      field: "aiStatus",
-      headerName: "AI Status",
+      field: "avgResponseTime",
+      headerName: "Avg. Response Time",
+      flex: 1,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "aiModel",
+      headerName: "AI Model",
+      flex: 1,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "memory",
+      headerName: "Memory",
       flex: 1,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => (
         <Badge
           className={`${
-            params.value === "Active"
+            params.value === "Enabled"
+              ? "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300"
+              : "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300"
+          }`}
+        >
+          {params.value}
+        </Badge>
+      ),
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      flex: 1,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => (
+        <Badge
+          className={`${
+            params.value === "active"
               ? "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300"
               : "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300"
           }`}
@@ -108,13 +150,12 @@ export const ClientsTable = ({ clients = [], onDelete }) => {
       flex: 1,
       align: "center",
       headerAlign: "center",
-      sortable: false,
       renderCell: (params) => (
         <div className="flex gap-2 justify-center">
           <Button
             variant="outline"
             size="icon"
-            className="h-8 w-8 cursor-pointer"
+            className="h-8 w-8"
             onClick={() =>
               router.push(`/super-admin/clients/${params.row.id}/edit`)
             }
@@ -124,7 +165,7 @@ export const ClientsTable = ({ clients = [], onDelete }) => {
           <Button
             variant="outline"
             size="icon"
-            className="h-8 w-8 cursor-pointer"
+            className="h-8 w-8"
             onClick={() => onDelete && onDelete(params.row)}
           >
             <Trash2 className="h-4 w-4 text-red-600" />
@@ -135,24 +176,17 @@ export const ClientsTable = ({ clients = [], onDelete }) => {
   ];
 
   return (
-    <Card className="shadow-sm border ">
-      <CardHeader>
-        <CardTitle className="text-lg font-semibold flex items-center gap-2 dark:text-gray-100">
-          <Bot className="w-5 h-5 text-blue-500" /> Client Overview
-        </CardTitle>
-      </CardHeader>
-
+    <Card className="shadow-sm border">
       <CardContent>
-        {/* scoped global CSS that forces the dark mode styles for the DataGrid */}
         <style jsx global>{`
           .dark .clients-data-grid-root .MuiSvgIcon-root {
             color: #E6EDF3 !important;
-                 }
+          }
         `}</style>
 
         <Paper
           sx={{
-            height: 500,
+            height: 550,
             width: "100%",
             borderRadius: "12px",
             overflow: "hidden",
@@ -164,13 +198,12 @@ export const ClientsTable = ({ clients = [], onDelete }) => {
             className="clients-data-grid-root"
             rows={rows}
             columns={columns}
-            checkboxSelection
             disableRowSelectionOnClick
             slots={{ toolbar: GridToolbarQuickFilter }}
             initialState={{
               pagination: { paginationModel: { pageSize: 5 } },
             }}
-            pageSizeOptions={[5, 10, 25, 50, 100]}
+            pageSizeOptions={[5, 10, 25, 50]}
             sx={{
               border: 0,
               color: isDark ? "#E6EDF3" : "#1E1E1E",
@@ -179,12 +212,6 @@ export const ClientsTable = ({ clients = [], onDelete }) => {
                 backgroundColor: isDark
                   ? "rgba(255,255,255,0.04)"
                   : "rgba(0,0,0,0.03)",
-              },
-              "& .MuiDataGrid-row.Mui-selected": {
-                backgroundColor: isDark
-                  ? "rgba(56,139,253,0.18) !important"
-                  : "rgba(56,139,253,0.08) !important",
-                color: isDark ? "#E6EDF3" : "#1E1E1E",
               },
             }}
           />

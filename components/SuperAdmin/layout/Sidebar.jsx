@@ -103,7 +103,7 @@ export default function AppSidebar() {
       icon: Users,
       items: [
         { label: "All Users", href: SUPERADMIN_USERS },
-        { label: "Add New", href: SUPERADMIN_ADD_USER },
+        // { label: "Add New", href: SUPERADMIN_ADD_USER },
       ],
     },
     {

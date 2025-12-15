@@ -18,7 +18,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={dmSans.variable} suppressHydrationWarning>
+    <html lang="en" className={dmSans.variable} >
       <body className="font-sans bg-white text-gray-900">
         <ThemeProvider attribute="class" defaultTheme="light">
           <QueryProvider>

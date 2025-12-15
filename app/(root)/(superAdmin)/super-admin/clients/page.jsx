@@ -1,7 +1,7 @@
 "use client";
 import { ClientsTable } from "@/components/SuperAdmin/client/ClientsTable";
 import { Button } from "@/components/ui/button";
-import { clients } from "@/lib/users";
+import { clients } from "@/lib/clients";
 import { SUPERADMIN_ADD_CLIENT } from "@/routes/superAdminRoutes";
 import { useRouter } from "next/navigation";
 import React from "react";

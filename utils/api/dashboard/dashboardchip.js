@@ -1,0 +1,38 @@
+export const dashboardChip = [
+  {
+    title: "Total Clients",
+    value: 1240,
+    change: "+1.2",
+    changeType: "increase",
+    changeLabel: "vs last week",
+    Icon: "Users",
+    bgColor: "bg-purple-100",
+  },
+  {
+    title: "AI Conversations",
+    value: 84120,
+    change: "-3.5",
+    changeType: "decrease",
+    changeLabel: "vs last week",
+    Icon: "MessageSquare",
+    bgColor: "bg-blue-100",
+  },
+  {
+    title: "Revenue Impact",
+    value: 18.4,
+    change: "+0.5",
+    changeType: "increase",
+    changeLabel: "vs last week",
+    Icon: "DollarSign",
+    bgColor: "bg-green-100",
+  },
+  {
+    title: "Active AI Agents",
+    value: "24 / 28",
+    change: "-1",
+    changeType: "decrease",
+    changeLabel: "vs last week",
+    Icon: "Bot",
+    bgColor: "bg-gray-100",
+  },
+];

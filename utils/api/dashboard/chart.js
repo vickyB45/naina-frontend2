@@ -1,0 +1,17 @@
+export const chartDatas = [
+  { date: "2025-10-24", volume: 120, conversion: 42 },
+  { date: "2025-10-25", volume: 150, conversion: 55 },
+  { date: "2025-10-26", volume: 180, conversion: 70 },
+  { date: "2025-10-27", volume: 210, conversion: 95 },
+  { date: "2025-10-28", volume: 260, conversion: 115 },
+  { date: "2025-10-29", volume: 240, conversion: 108 },
+  { date: "2025-10-30", volume: 275, conversion: 126 },
+  { date: "2025-10-31", volume: 290, conversion: 138 },
+  { date: "2025-11-01", volume: 310, conversion: 145 },
+  { date: "2025-11-02", volume: 280, conversion: 139 },
+  { date: "2025-11-03", volume: 300, conversion: 150 },
+  { date: "2025-11-04", volume: 325, conversion: 160 },
+  { date: "2025-11-05", volume: 345, conversion: 172 },
+  { date: "2025-11-06", volume: 360, conversion: 180 },
+  { date: "2025-11-07", volume: 380, conversion: 192 },
+];
