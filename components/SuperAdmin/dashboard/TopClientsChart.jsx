@@ -1,6 +1,6 @@
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
-import { barChart } from "@/utils/api/dashboard/barchart";
+import { barChart } from "@/utils/api/dashboard/barChart";
 
 // Top Clients Bar Chart Component
 export const TopClientsChart = () => {
