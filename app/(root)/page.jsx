@@ -1,5 +1,6 @@
 "use client";
 
+import { handleTenantLogin } from '@/api/admin.api';
 import { useSuperadminOverview } from '@/hooks/query/superadminOverview';
 
 export default function Page() {
@@ -8,11 +9,9 @@ export default function Page() {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading overview</div>;
 
-  console.log(data)
-
   return (
     <div>
-      <h1>Overview</h1>
+      <h1>Website page</h1>
     </div>
   );
 }

@@ -1,189 +1,270 @@
 "use client";
-import React, { useState, useCallback } from "react";
+
+import React from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
-import { UploadCloud, Save, Image as ImageIcon, X } from "lucide-react";
-import { useDropzone } from "react-dropzone";
-import { zodSchema } from "@/lib/validations.zod";
+import {
+  Save,
+  UserPlus,
+  Building2,
+  Mail,
+  Lock,
+  Globe,
+  User,
+  Sparkles,
+} from "lucide-react";
+import { useCreateTenant } from "@/hooks/superadmin/admins/mutation/superadminAdminMutation";
 
-export default function AddClient() {
-  const [preview, setPreview] = useState(null);
-
+export default function AddTenant() {
   const {
     register,
     handleSubmit,
-    setValue,
-    formState: { errors },
     reset,
+    formState: { errors },
   } = useForm({
-    resolver: zodResolver(zodSchema),
     defaultValues: {
       name: "",
+      businessName: "",
       email: "",
-      plan: "",
-      website: "",
-      logo: "",
-      aiStatus: "Inactive",
-      notes: "",
+      password: "",
+      websiteUrl: "",
     },
   });
 
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      const file = acceptedFiles[0];
-      if (file) {
-        const previewURL = URL.createObjectURL(file);
-        setPreview(previewURL);
-        setValue("logo", previewURL);
-      }
-    },
-    [setValue]
-  );
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: { "image/*": [] },
-    multiple: false,
-  });
+  const { mutate: createTenant, isPending } = useCreateTenant();
 
   const onSubmit = (data) => {
-    console.log("✅ New Client Data:", data);
-    toast.success(`${data.name} added successfully!`);
-    reset();
-    setPreview(null);
+    createTenant(data, {
+      onSuccess: () => {
+        reset();
+      },
+    });
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-8">
-      <Card className="shadow-sm border">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold flex items-center gap-2">
-            <UploadCloud className="w-5 h-5 text-blue-500" />
-            Add New Client
-          </CardTitle>
-        </CardHeader>
+    <div
+      className="
+        min-h-screen py-12 px-4
+        bg-gradient-to-br
+        from-gray-50 via-white to-gray-100
+        dark:from-black dark:via-gray-950 dark:to-black
+      "
+    >
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8 relative">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-32 h-32 bg-black/5 dark:bg-white/5 rounded-full blur-3xl animate-pulse"></div>
+          </div>
 
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            
-            {/* Client Name */}
-            <div className="grid gap-2">
-              <Label>Client Name</Label>
-              <Input placeholder="Enter client name" {...register("name")} />
-              {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
-            </div>
+          <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-white to-gray-200 dark:from-white dark:to-gray-300 mb-4 shadow-2xl">
+            <UserPlus className="w-10 h-10 text-black" />
+          </div>
 
-            {/* Email */}
-            <div className="grid gap-2">
-              <Label>Email</Label>
-              <Input type="email" placeholder="example@client.com" {...register("email")} />
-              {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
-            </div>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">
+            Create New Tenant
+          </h1>
 
-            {/* Plan */}
-            <div className="grid gap-2">
-              <Label>Plan</Label>
-              <Select onValueChange={(val) => setValue("plan", val)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select plan" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Free">Free</SelectItem>
-                  <SelectItem value="Basic">Basic</SelectItem>
-                  <SelectItem value="Pro">Pro</SelectItem>
-                  <SelectItem value="Enterprise">Enterprise</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.plan && <p className="text-sm text-red-500">{errors.plan.message}</p>}
-            </div>
+          <p className="text-gray-600 dark:text-gray-400 text-sm flex items-center justify-center gap-2">
+            <Sparkles className="w-4 h-4" />
+            Set up a new organization in seconds
+          </p>
+        </div>
 
-            {/* Website */}
-            <div className="grid gap-2">
-              <Label>Website</Label>
-              <Input placeholder="https://clientwebsite.com" {...register("website")} />
-              {errors.website && <p className="text-sm text-red-500">{errors.website.message}</p>}
-            </div>
+        {/* Card */}
+        <Card
+          className="
+            border border-gray-200 dark:border-gray-800
+            bg-white/80 dark:bg-black/40
+            backdrop-blur-xl shadow-2xl
+          "
+        >
+          <CardContent className="p-8">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              {/* Name & Business */}
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Tenant Name */}
+                <div className="space-y-2">
+                  <Label className="text-gray-700 dark:text-gray-300 text-xs uppercase tracking-wider flex items-center gap-2">
+                    <User className="w-3.5 h-3.5" />
+                    Tenant Name
+                  </Label>
+                  <Input
+                    placeholder="John Doe"
+                    className="
+                      bg-white dark:bg-white/5
+                      border border-gray-300 dark:border-gray-700
+                      text-gray-900 dark:text-white
+                      placeholder:text-gray-400 dark:placeholder:text-gray-500
+                      h-12 rounded-xl
+                      focus:border-black dark:focus:border-white
+                      focus:ring-2 focus:ring-black/10 dark:focus:ring-white/20
+                    "
+                    {...register("name", {
+                      required: "Tenant name is required",
+                    })}
+                  />
+                  {errors.name && (
+                    <p className="text-xs text-red-600 dark:text-red-400 mt-1.5">
+                      {errors.name.message}
+                    </p>
+                  )}
+                </div>
 
-            {/* 🧠 AI Status */}
-            <div className="grid gap-2">
-              <Label>AI Status</Label>
-              <Select onValueChange={(val) => setValue("aiStatus", val)} defaultValue="Inactive">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select AI Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Active">Active</SelectItem>
-                  <SelectItem value="Inactive">Inactive</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+                {/* Business Name */}
+                <div className="space-y-2">
+                  <Label className="text-gray-700 dark:text-gray-300 text-xs uppercase tracking-wider flex items-center gap-2">
+                    <Building2 className="w-3.5 h-3.5" />
+                    Business Name
+                  </Label>
+                  <Input
+                    placeholder="ABC Pvt Ltd"
+                    className="
+                      bg-white dark:bg-white/5
+                      border border-gray-300 dark:border-gray-700
+                      text-gray-900 dark:text-white
+                      placeholder:text-gray-400 dark:placeholder:text-gray-500
+                      h-12 rounded-xl
+                      focus:border-black dark:focus:border-white
+                      focus:ring-2 focus:ring-black/10 dark:focus:ring-white/20
+                    "
+                    {...register("businessName", {
+                      required: "Business name is required",
+                    })}
+                  />
+                  {errors.businessName && (
+                    <p className="text-xs text-red-600 dark:text-red-400 mt-1.5">
+                      {errors.businessName.message}
+                    </p>
+                  )}
+                </div>
+              </div>
 
-           
+              {/* Divider */}
+              <div className="relative py-4">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="bg-white dark:bg-black px-4 text-xs text-gray-500 uppercase tracking-widest">
+                    Credentials
+                  </span>
+                </div>
+              </div>
 
-            {/* 🖼️ Logo Upload */}
-            <div className="grid gap-3">
-              <Label>Client Logo</Label>
-              <div
-                {...getRootProps()}
-                className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer transition 
-                ${isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300 hover:border-blue-400"}`}
-              >
-                <input {...getInputProps()} />
-                {preview ? (
-                  <div className="relative">
-                    <img src={preview} alt="Logo Preview" className="w-24 h-24 object-cover rounded-lg" />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setPreview(null);
-                        setValue("logo", "");
-                      }}
-                      className="absolute top-0 right-0 bg-white rounded-full p-1 shadow"
-                    >
-                      <X className="w-4 h-4 text-gray-600" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="text-center text-gray-500 flex flex-col items-center gap-2">
-                    <ImageIcon className="w-6 h-6 text-gray-400" />
-                    <p className="text-sm">Drag & drop or click to upload</p>
-                  </div>
+              {/* Email */}
+              <div className="space-y-2">
+                <Label className="text-gray-700 dark:text-gray-300 text-xs uppercase tracking-wider flex items-center gap-2">
+                  <Mail className="w-3.5 h-3.5" />
+                  Email Address
+                </Label>
+                <Input
+                  type="email"
+                  placeholder="admin@company.com"
+                  className="
+                    bg-white dark:bg-white/5
+                    border border-gray-300 dark:border-gray-700
+                    text-gray-900 dark:text-white
+                    placeholder:text-gray-400 dark:placeholder:text-gray-500
+                    h-12 rounded-xl
+                    focus:border-black dark:focus:border-white
+                    focus:ring-2 focus:ring-black/10 dark:focus:ring-white/20
+                  "
+                  {...register("email", { required: "Email is required" })}
+                />
+                {errors.email && (
+                  <p className="text-xs text-red-600 dark:text-red-400 mt-1.5">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
 
-              <Input
-                placeholder="Or paste image URL"
-                {...register("logo")}
-                onChange={(e) => {
-                  setValue("logo", e.target.value);
-                  setPreview(e.target.value);
-                }}
-              />
-            </div>
+              {/* Password & Website */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-gray-700 dark:text-gray-300 text-xs uppercase tracking-wider flex items-center gap-2">
+                    <Lock className="w-3.5 h-3.5" />
+                    Password
+                  </Label>
+                  <Input
+                    type="password"
+                    placeholder="••••••••"
+                    className="
+                      bg-white dark:bg-white/5
+                      border border-gray-300 dark:border-gray-700
+                      text-gray-900 dark:text-white
+                      placeholder:text-gray-400 dark:placeholder:text-gray-500
+                      h-12 rounded-xl
+                      focus:border-black dark:focus:border-white
+                      focus:ring-2 focus:ring-black/10 dark:focus:ring-white/20
+                    "
+                    {...register("password", {
+                      required: "Password is required",
+                      minLength: {
+                        value: 6,
+                        message: "Minimum 6 characters required",
+                      },
+                    })}
+                  />
+                  {errors.password && (
+                    <p className="text-xs text-red-600 dark:text-red-400 mt-1.5">
+                      {errors.password.message}
+                    </p>
+                  )}
+                </div>
 
-            {/* Notes */}
-            <div className="grid gap-2">
-              <Label>Notes</Label>
-              <Textarea placeholder="Any internal note..." {...register("notes")} />
-            </div>
+                <div className="space-y-2">
+                  <Label className="text-gray-700 dark:text-gray-300 text-xs uppercase tracking-wider flex items-center gap-2">
+                    <Globe className="w-3.5 h-3.5" />
+                    Website URL
+                  </Label>
+                  <Input
+                    placeholder="https://company.com"
+                    className="
+                      bg-white dark:bg-white/5
+                      border border-gray-300 dark:border-gray-700
+                      text-gray-900 dark:text-white
+                      placeholder:text-gray-400 dark:placeholder:text-gray-500
+                      h-12 rounded-xl
+                      focus:border-black dark:focus:border-white
+                      focus:ring-2 focus:ring-black/10 dark:focus:ring-white/20
+                    "
+                    {...register("websiteUrl", {
+                      required: "Website URL is required",
+                    })}
+                  />
+                  {errors.websiteUrl && (
+                    <p className="text-xs text-red-600 dark:text-red-400 mt-1.5">
+                      {errors.websiteUrl.message}
+                    </p>
+                  )}
+                </div>
+              </div>
 
-            {/* Submit */}
-            <div className="flex justify-end">
-              <Button type="submit" className="flex items-center gap-2 text-white">
-                <Save className="w-4 h-4" />
-                Save Client
+              {/* Submit */}
+              <Button
+                type="submit"
+                disabled={isPending}
+                className="
+                  w-full h-14 rounded-xl font-bold text-sm uppercase tracking-widest
+                  bg-black text-white hover:bg-gray-900
+                  dark:bg-white dark:text-black dark:hover:bg-gray-200
+                  transition-all shadow-lg
+                "
+              >
+                {isPending ? "Creating Tenant..." : "Create Tenant"}
               </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+            </form>
+          </CardContent>
+        </Card>
+
+        <p className="mt-6 text-xs text-center text-gray-600 dark:text-gray-500">
+          New tenant will receive login credentials via email
+        </p>
+      </div>
     </div>
   );
 }

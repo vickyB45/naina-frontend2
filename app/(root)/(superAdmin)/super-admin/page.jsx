@@ -27,11 +27,6 @@ export default function SuperAdminDashboard() {
   // 🆕 Fetch backend analytics overview
   const { data, isLoading, error } = useSuperadminOverview();
 
-if (isLoading)
-  return (
-    <Loader/>
-  );
-
   if (error) return <div className="p-6 text-red-500">Error loading overview</div>;
 
   const overview = data?.data;

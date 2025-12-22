@@ -167,7 +167,7 @@ export default function SystemOverview() {
           </CardHeader>
 
           <CardContent>
-            <div className="mx-auto aspect-square max-h-[250px]">
+            <div className="mx-auto aspect-square max-h-62.5">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Tooltip />

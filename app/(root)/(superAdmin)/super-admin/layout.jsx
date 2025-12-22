@@ -1,3 +1,4 @@
+import SuperAdminProtectedRoute from "@/components/auth/SuperAdminProtectedRoute";
 import ClientLayout from "@/components/SuperAdmin/layout/ClientLayout";
 import { Toaster } from "sonner";
 
@@ -8,9 +9,12 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-      <div className="bg-background text-foreground min-h-screen">
-        <ClientLayout>{children}</ClientLayout>
-        <Toaster position="top-right" />
+    <div className="bg-background text-foreground min-h-screen">
+       <SuperAdminProtectedRoute>
+      <ClientLayout>
+        {children}
+      </ClientLayout>
+    </SuperAdminProtectedRoute>
       </div>
   );
 }

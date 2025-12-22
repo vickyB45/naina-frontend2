@@ -1,25 +1,25 @@
 "use client";
-import { ClientsTable } from "@/components/SuperAdmin/client/ClientsTable";
+
+import { useGetAllTenants } from "@/hooks/superadmin/admins/query/adminQuery";
 import { Button } from "@/components/ui/button";
-import { clients } from "@/lib/clients";
 import { SUPERADMIN_ADD_CLIENT } from "@/routes/superAdminRoutes";
 import { useRouter } from "next/navigation";
-import React from "react";
+import { ClientsTable } from "@/components/SuperAdmin/client/ClientsTable";
 
 export default function ClientsPage() {
-  const router = useRouter()
+  const router = useRouter();
+  const { data, isLoading, isError } = useGetAllTenants();
+
+  const clients =
+    data?.pages?.flatMap((page) => page.data) ?? [];
+
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Error loading clients</p>;
+
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold mb-4">Client Management</h1>
-        <Button
-          className="cursor-pointer text-white"
-          type="button"
-          onClick={() => router.push(SUPERADMIN_ADD_CLIENT)} // example navigation
-        >
-          Add New Client
-        </Button>
-      </div>
+    <div className="p-2 max-w-6xl mx-auto">
+
+      {/* 🔥 Server Component */}
       <ClientsTable clients={clients} />
     </div>
   );
